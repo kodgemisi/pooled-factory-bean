@@ -12,8 +12,8 @@ public abstract class AbstractSoapPooledFactoryBean<S> extends AbstractPooledFac
 	}
 
 	public AbstractSoapPooledFactoryBean(AbstractPooledObjectFactory<WrapperPoolable<S>> abstractPooledObjectFactory,
-			PoolConfig<WrapperPoolable<S>> poolConfig) {
-		super(abstractPooledObjectFactory, poolConfig);
+			DefaultPoolConfig<WrapperPoolable<S>> defaultPoolConfig) {
+		super(abstractPooledObjectFactory, defaultPoolConfig);
 	}
 
 	/**

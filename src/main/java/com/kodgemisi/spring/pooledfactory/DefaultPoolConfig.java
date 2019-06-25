@@ -7,7 +7,7 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
  *
  * @author destans
  */
-public class PoolConfig<T> extends GenericObjectPoolConfig<T> {
+public class DefaultPoolConfig<T> extends GenericObjectPoolConfig<T> {
 
 	@Override
 	public boolean getBlockWhenExhausted() {

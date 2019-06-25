@@ -7,7 +7,7 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 
 /**
  * Creates {@link Poolable} objects to be held by an {@link org.apache.commons.pool2.ObjectPool}
- *
+ * <p>
  * Created on June, 2019
  *
  * @author destans
@@ -20,6 +20,10 @@ public abstract class AbstractPooledObjectFactory<P extends Poolable> implements
 	 */
 	protected ObjectPool<P> objectPool;
 
+	protected ObjectPool<Poolable> getObjectPool() {
+		return (ObjectPool<Poolable>) this.objectPool;
+	}
+
 	public synchronized void setObjectPool(ObjectPool<P> objectPool) {
 		if (this.objectPool != null) {
 			throw new IllegalStateException("objectPool is already set, cannot be set again!");
@@ -27,19 +31,15 @@ public abstract class AbstractPooledObjectFactory<P extends Poolable> implements
 		this.objectPool = objectPool;
 	}
 
-	protected ObjectPool<Poolable> getObjectPool() {
-		return (ObjectPool<Poolable>) this.objectPool;
-	}
-
 	public abstract P createObject();
 
 	@Override
-	public PooledObject<P> makeObject() throws Exception {
+	public PooledObject<P> makeObject() {
 		return new DefaultPooledObject<>(createObject());
 	}
 
 	@Override
-	public void destroyObject(PooledObject<P> p) throws Exception {
+	public void destroyObject(PooledObject<P> p) {
 
 	}
 
@@ -49,12 +49,12 @@ public abstract class AbstractPooledObjectFactory<P extends Poolable> implements
 	}
 
 	@Override
-	public void activateObject(PooledObject<P> p) throws Exception {
+	public void activateObject(PooledObject<P> p) {
 		p.getObject().activateObject();
 	}
 
 	@Override
-	public void passivateObject(PooledObject<P> p) throws Exception {
+	public void passivateObject(PooledObject<P> p) {
 		p.getObject().passivateObject();
 	}
 }

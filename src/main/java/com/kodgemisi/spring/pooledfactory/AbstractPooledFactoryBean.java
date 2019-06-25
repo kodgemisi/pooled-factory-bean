@@ -2,6 +2,7 @@ package com.kodgemisi.spring.pooledfactory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.SmartFactoryBean;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 
@@ -16,10 +17,10 @@ public abstract class AbstractPooledFactoryBean<P extends Poolable> extends Abst
 	private final GenericObjectPool<P> objectPool;
 
 	public AbstractPooledFactoryBean(AbstractPooledObjectFactory<P> abstractPooledObjectFactory) {
-		this(abstractPooledObjectFactory, new PoolConfig<>());
+		this(abstractPooledObjectFactory, new DefaultPoolConfig<>());
 	}
 
-	public AbstractPooledFactoryBean(AbstractPooledObjectFactory<P> abstractPooledObjectFactory, PoolConfig<P> poolConfig) {
+	public AbstractPooledFactoryBean(AbstractPooledObjectFactory<P> abstractPooledObjectFactory, GenericObjectPoolConfig<P> poolConfig) {
 		this.objectPool = new GenericObjectPool<>(abstractPooledObjectFactory, poolConfig);
 		abstractPooledObjectFactory.setObjectPool(this.objectPool);
 		this.setSingleton(false);

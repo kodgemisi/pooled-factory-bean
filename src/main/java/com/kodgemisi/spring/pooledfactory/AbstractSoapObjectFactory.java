@@ -1,7 +1,5 @@
 package com.kodgemisi.spring.pooledfactory;
 
-import com.kodgemisi.spring.pooledfactory.AbstractPooledObjectFactory;
-import com.kodgemisi.spring.pooledfactory.Poolable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.ObjectPool;
@@ -27,7 +25,7 @@ public abstract class AbstractSoapObjectFactory<S> extends AbstractPooledObjectF
 
 	protected WrapperPoolable<S> createObject(ObjectPool<Poolable> pool) {
 		final S s = createSoapObject();
-		final WrapperPoolable<S> poolable = new DefaultWrapperPoolable<>(pool);
+		final WrapperPoolable<S> poolable = new SoapProxyWrapperPoolable<>(pool);
 
 		log.info("Creating new Poolable instance");
 
@@ -54,13 +52,11 @@ class DynamicInvocationHandler implements InvocationHandler {
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
+		// CAVEAT: most "super" types should be first, otherwise methods would be caught early by the if blocks
+
 		// for toString, equals etc.
 		if (method.getDeclaringClass().isAssignableFrom(Object.class)) {
 			return method.invoke(poolable, args);
-		}
-
-		if (method.getDeclaringClass().isAssignableFrom(WrapperPoolable.class)) {
-			return object;
 		}
 
 		// If the method is Closeable#close then it means we're returning the object to the pool.
@@ -75,6 +71,12 @@ class DynamicInvocationHandler implements InvocationHandler {
 
 		if (method.getDeclaringClass().isAssignableFrom(Poolable.class)) {
 			return method.invoke(poolable, args);
+		}
+
+		// WrapperPoolable#getWrappedObject method should return the wrapped object directly
+		// See implementation of com.kodgemisi.spring.pooledfactory.SoapProxyWrapperPoolable#getWrappedObject
+		if (method.getDeclaringClass().isAssignableFrom(WrapperPoolable.class)) {
+			return object;
 		}
 
 		return method.invoke(object, args);
