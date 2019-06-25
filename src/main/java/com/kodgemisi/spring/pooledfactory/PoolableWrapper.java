@@ -11,7 +11,7 @@ import org.apache.commons.pool2.ObjectPool;
  *
  * @author destans
  */
-public class PoolableWrapper<T> extends Poolable {
+public class PoolableWrapper<T> extends AbstractPoolable {
 
 	private final T object;
 

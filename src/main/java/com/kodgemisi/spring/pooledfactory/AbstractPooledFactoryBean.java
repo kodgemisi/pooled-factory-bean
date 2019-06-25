@@ -1,5 +1,6 @@
 package com.kodgemisi.spring.pooledfactory;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.springframework.beans.factory.SmartFactoryBean;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
  *
  * @author destans
  */
+@Slf4j
 public abstract class AbstractPooledFactoryBean<P extends Poolable> extends AbstractFactoryBean<P> implements SmartFactoryBean<P> {
 
 	private final GenericObjectPool<P> objectPool;
@@ -31,7 +33,18 @@ public abstract class AbstractPooledFactoryBean<P extends Poolable> extends Abst
 	@Override
 	protected P createInstance() {
 		try {
-			return objectPool.borrowObject();
+
+			if (log.isTraceEnabled()) {
+				log.trace("Borrowing object from the pool");
+			}
+
+			final P p = objectPool.borrowObject();
+
+			if (log.isTraceEnabled()) {
+				log.trace("Borrowed object from the pool {}", p);
+			}
+
+			return p;
 		}
 		catch (Exception e) {
 			throw new IllegalStateException("Couldn't borrow an instance from the pool.", e);

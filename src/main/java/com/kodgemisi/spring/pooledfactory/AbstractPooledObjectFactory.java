@@ -27,6 +27,10 @@ public abstract class AbstractPooledObjectFactory<P extends Poolable> implements
 		this.objectPool = objectPool;
 	}
 
+	protected ObjectPool<Poolable> getObjectPool() {
+		return (ObjectPool<Poolable>) this.objectPool;
+	}
+
 	public abstract P createObject();
 
 	@Override
